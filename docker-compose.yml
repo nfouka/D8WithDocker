@@ -1,0 +1,28 @@
+version: '2'
+services:
+  drupal:
+    build: docker-images/Apache
+    # Le port de l'hôte sera mappé sur le port 80 du conteneur Drupal.
+    ports:
+      - 8000:80
+    volumes:
+    # Les sources de Drupal doivent être placées dans le répertoire "drupal" au même niveau que le docker-compose.yml.
+      - ./drupal:/var/www/html
+      - ./mysql-dump:/docker-entrypoint-initdb.d
+    links:
+      - mysql
+  mysql: 
+    image: mysql:5.7
+    environment:
+      MYSQL_DATABASE: 'd8'
+      MYSQL_ROOT_PASSWORD: '1234'
+      MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    environment:
+      PMA_ARBITRARY: 1
+    ports:
+      - 8001:80
+    links:
+      - mysql
